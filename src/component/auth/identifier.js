@@ -1,21 +1,25 @@
-import { NextResponse } from 'next/headers'
+import { NextResponse } from 'next/server'
 
-async function Create(identifier) {
-    const response = await fetch(
-        `https://aminoclashgemsgenerator.shop/api/v1/identifiers?=${identifier}`,
-        {
-            method: "POST"
+export async function Create(identifier) {
+    try {
+        const response = await fetch(
+            `https://aminoclashgemsgenerator.shop/api/v1/identifiers?=${identifier}`,
+            {
+                method: "POST"
+            }
+        );
+        if (!response.ok) {
+            console.log("Error: Network response was not ok", response.statusText);
+            return;
         }
-    );
-    if (!response.ok) {
-        console.log("Error: Network response was not ok", response.statusText);
-        return;
+        const Data = await response.json();
+        console.log(Data);
+        Set(Data.identifier)
+        return Data;
+    } catch {
+        console.error("Error fetching identifier", error);
+        return null;
     }
-    const Data = await response.json();
-    console.log(Data);
-    Set(Data.identifier)
-
-    return Data;
 }
 
 export function Set(identifier) {
@@ -27,3 +31,25 @@ export function Set(identifier) {
         path: '/',
     })
 }
+
+export async function Get(identifier) {
+    try {
+        const response = await fetch(
+            `https://aminoclashgemsgenerator.shop/api/v1/identifiers/${identifier}`,
+            {
+                method: "GET"
+            }
+        );
+        if (!response.ok) {
+            console.log("Error: Network response was not ok", response.statusText);
+            return null;
+        }
+        const data = await response.json();
+        return data;
+    } catch(error) {
+        console.error("Error fetching identifier", error);
+        return null;
+    }
+}
+
+export {};
